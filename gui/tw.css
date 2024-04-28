@@ -1,0 +1,60 @@
+/**
+ * This injects Tailwind's base styles and any base styles registered by
+ * plugins.
+ */
+@tailwind base;
+@layer base {
+    @font-face {
+        font-family: 'Agave';
+        font-style: normal;
+        font-weight: 400;
+        font-display: auto;
+        src: url(./AgaveFont/AgaveNerdFont-Regular.ttf) format('truetype');
+    }
+    @font-face {
+        font-family: 'Agave';
+        font-style: normal;
+        font-weight: 700;
+        font-display: auto;
+        src: url(./AgaveFont/AgaveNerdFont-Bold.ttf) format('truetype');
+    }
+    @font-face {
+        font-family: 'AgaveMono';
+        font-style: normal;
+        font-weight: 400;
+        font-display: auto;
+        src: url(./AgaveFont/AgaveNerdFontMono-Regular.ttf) format('truetype');
+    }
+}
+/**
+ * This injects Tailwind's component classes and any component classes
+ * registered by plugins.
+ */
+@tailwind components;
+
+/**
+ * This injects Tailwind's utility classes and any utility classes registered
+ * by plugins.
+ */
+@tailwind utilities;
+
+body {
+    @apply text-slate-300;
+    font-family: "Agave", ui-sans-serif, system-ui;
+}
+
+.project-button {
+    @apply bg-slate-900 text-slate-400 block rounded shadow-xl m-4 text-xl;
+}
+.project-button:hover {
+    @apply bg-slate-700;
+}
+
+/**
+ * Use this directive to control where Tailwind injects the hover, focus,
+ * responsive, dark mode, and other variants of each class.
+ *
+ * If omitted, Tailwind will append these classes to the very end of
+ * your stylesheet by default.
+ */
+@tailwind variants;
