@@ -9,6 +9,15 @@ def watch_and_reload(window, event):
         window.evaluate_js('window.location.reload()')
         # window.load_url()
 
+def bind(window):
+    def gh_click(e):
+        print("Github :)")
+    def n_click(e):
+        print("Node :)")
+    gh_button = window.dom.get_element("#gh-login")
+    gh_button.events.click += gh_click
+    n_button = window.dom.get_element("#buildn")
+    n_button.events.click += n_click
 
 if __name__ == '__main__':
     # Create a standard webview window
@@ -26,7 +35,7 @@ if __name__ == '__main__':
     reload_thread.start()
 
     # start the webview app
-    webview.start(debug=True)
+    webview.start(bind, window, debug=True)
 
     # upon the webview app exitting, stop the watcher
     thread_running.set()
