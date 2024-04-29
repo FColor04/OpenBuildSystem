@@ -30,7 +30,19 @@ def login_github():
     auth = Auth.Token(os.environ["key"])
     g = Github(auth=auth)
     print(g.get_user().login)
-    return g
+    repos = []
+    with open("git.repos", 'w+') as f:
+        for repo in g.get_user().get_repos():
+            print(repo.name)
+            try: top = repo.get_topics()
+            except: top = []
+            if "openbs" in top:
+                repos.append(repo)
+        for i in repos:
+            f.write(i.full_name+"\n")
+    return g, repos
 
 if __name__ == "__main__":
-    load_github()
+    _, r = login_github()
+    print(r)
+    print(r[0].get_contents('test1').decoded_content)
