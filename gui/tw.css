@@ -44,7 +44,10 @@ body {
 }
 
 .project-button {
-    @apply bg-slate-900 text-slate-400 block rounded shadow-xl m-4 text-xl;
+    @apply bg-slate-900 text-slate-400 flex flex-col justify-center items-center rounded shadow-xl m-4 p-2 text-xl;
+}
+.project-button > * {
+    @apply block;
 }
 .project-button:hover {
     @apply bg-slate-700;

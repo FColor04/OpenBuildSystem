@@ -5,33 +5,51 @@
     <script defer="defer">
         const ipAddressRegex = /^((25[0-5]|(2[0-4]|1\d|[1-9]|)\d)\.?\b){4}$/;
         const portRegex = /^([1-9][0-9]{0,3}|[1-5][0-9]{4}|6[0-4][0-9]{3}|65[0-4][0-9]{2}|655[0-2][0-9]|6553[0-5])$/;
+        let pendingChanges;
+
         let validations = [];
+        let currentConfig = {};
+        let currentlySavedConfig = {};
+        
         function OnPythonLoaded() {
+            pendingChanges = document.getElementById("pending-changes");
+            const address = document.getElementById("server-address");
+            const port = document.getElementById("server-port");
+            
             console.log("Python loaded");
+            currentConfig = {...currentlySavedConfig};
+            
             window.pywebview.api.load_config().then(config => {
-                console.log(config);
+                currentlySavedConfig = {
+                    "server-address": "127.0.0.1",
+                    "server-port": "34899",
+                    ...JSON.parse(config)
+                };
+                currentConfig = {...currentlySavedConfig};
+                ValidateConfig();
             });
             
-            AddValidation(document.getElementById("server-address"), element => {
+            AddValidation(address, element => {
                 let result = ipAddressRegex.exec(element.value);
                 return result != null;
             });
-            AddValidation(document.getElementById("server-port"), element => {
+            AddValidation(port, element => {
                 let result = portRegex.exec(element.value);
                 return result != null;
             });
             
-            ValidateConfig();
             document.getElementById("config-form").addEventListener("submit", SaveConfig);
+            document.getElementById("apply").addEventListener("click", SaveConfig);
         }
         function AddValidation(element, validation) {
             if (element === null) throw "Element can't be null";
             let validationFn = () => {
                 let success = validation(element);
-                if (success)
-                    element.classList.remove('invalid')
-                else
-                    element.classList.add("invalid")
+                element.classList.toggle("invalid", !success);
+
+                currentConfig[element.name] = element.value;
+                console.log({a: currentConfig, b: currentlySavedConfig});
+                pendingChanges.classList.toggle("hidden", JSON.stringify(currentConfig) === JSON.stringify(currentlySavedConfig))
             };
             element.addEventListener("focusout", validationFn);
             validations.push(validationFn);
@@ -49,19 +67,34 @@
         
         function SaveConfig(e) {
             e.preventDefault();
+
+            window.pywebview.api.save_config(JSON.stringify(currentConfig));
+            
+            currentlySavedConfig = {...currentConfig};
         }
+
+        window.addEventListener('pywebviewready', OnPythonLoaded)
     </script>
 </head>
-<body class="bg-slate-800 text-slate-100 h-screen p-4">
+<body class="relative bg-slate-800 text-slate-100 h-screen p-4 flex flex-col">
+    <div id="pending-changes" class="block fixed top-4 right-4 z-10 bg-amber-500 text-amber-900 rounded p-4 hidden">
+        <span class="mr-4"></span>You have unsaved changes.
+    </div>
     <div class="flex flex-row align-center mb-4">
-        <button class="text-4xl mr-8">󰌍</button>
+        <a class="block text-4xl mr-8" href="/index.html">󰌍</a>
         <h1 class="grow text-4xl border-b-2 border-slate-600">Config</h1>
     </div>
     <form id="config-form" class="grid grid-cols-4 gap-2">
         <label for="server-address" class="col-span-2">Server address</label>
         <input id="server-address" name="server-address" type="text" class="col-span-2 bg-slate-900 p-1 rounded-sm" value="127.0.0.1"/>
+        
         <label for="server-port" class="col-span-2">Server port</label>
-        <input id="server-port" name="server-port" type="text" class="col-span-2 bg-slate-900 p-1 rounded-sm" value="0"/>
+        <input id="server-port" name="server-port" type="text" class="col-span-2 bg-slate-900 p-1 rounded-sm" value="34899"/>
     </form>
+    <div class="grow"></div>
+    <div class="flex align-center justify-center gap-2">
+        <a class="p-2 rounded bg-slate-900" href="/index.html">Back</a>
+        <button class="p-2 rounded bg-slate-900" id="apply">Apply</button>
+    </div>
 </body>
 </html>
