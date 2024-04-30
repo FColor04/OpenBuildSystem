@@ -4,6 +4,8 @@ from github import GithubIntegration
 import os
 from os.path import exists
 import dotenv
+from json import loads
+from git import Repo
 dot = None
 
 def load_dotenv():
@@ -42,7 +44,24 @@ def login_github():
             f.write(i.full_name+"\n")
     return g, repos
 
+def get_repo_data(reps):
+    print(reps)
+    repo_data = []
+    for i in reps:
+        repo_data.append([loads(i.get_contents('makefile.obs').decoded_content.decode("ascii")), i])
+    return repo_data
+
+def clone_repo(repo, path):
+    repo_path = "https://github.com/"+repo.full_name
+    try:
+        repo = Repo.init(path)
+    except:
+        repo = Repo.clone_from(repo_path, path)
+    return repo
+
+
 if __name__ == "__main__":
-    _, r = login_github()
-    print(r)
-    print(r[0].get_contents('test1').decoded_content)
+    _, reps = login_github()
+    repo_data = get_repo_data(reps)
+    rep = clone_repo(repo_data[0][1], "C:/Users/R9_Dev/TestRepo")
+    print(repo_data)

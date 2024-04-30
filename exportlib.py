@@ -33,5 +33,5 @@ def write_settings(set_path="TestProj/Test/", export_type="release",
         f.write(json.dumps(settings))
 
 if __name__ == "__main__":
-    write_settings(export_path='C:/Users/R9_Dev/Documents/GitHub/OpenBuildSystem/TestProj/Test/test.exe')
+    print(json.dumps(write_settings(export_path='TestProj/Test/test.exe')))
     export()
