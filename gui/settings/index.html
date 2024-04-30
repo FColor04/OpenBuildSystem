@@ -2,8 +2,66 @@
 <html>
 <head>
     <link rel="stylesheet" href="/style.css">
+    <script defer="defer">
+        const ipAddressRegex = /^((25[0-5]|(2[0-4]|1\d|[1-9]|)\d)\.?\b){4}$/;
+        const portRegex = /^([1-9][0-9]{0,3}|[1-5][0-9]{4}|6[0-4][0-9]{3}|65[0-4][0-9]{2}|655[0-2][0-9]|6553[0-5])$/;
+        let validations = [];
+        function OnPythonLoaded() {
+            console.log("Python loaded");
+            window.pywebview.api.load_config().then(config => {
+                console.log(config);
+            });
+            
+            AddValidation(document.getElementById("server-address"), element => {
+                let result = ipAddressRegex.exec(element.value);
+                return result != null;
+            });
+            AddValidation(document.getElementById("server-port"), element => {
+                let result = portRegex.exec(element.value);
+                return result != null;
+            });
+            
+            ValidateConfig();
+            document.getElementById("config-form").addEventListener("submit", SaveConfig);
+        }
+        function AddValidation(element, validation) {
+            if (element === null) throw "Element can't be null";
+            let validationFn = () => {
+                let success = validation(element);
+                if (success)
+                    element.classList.remove('invalid')
+                else
+                    element.classList.add("invalid")
+            };
+            element.addEventListener("focusout", validationFn);
+            validations.push(validationFn);
+        }
+        
+        function ValidateConfig() {
+            for (let i = 0;i < validations.length;i++){
+                try {
+                    validations[i]();
+                } catch(e) {
+                    console.error(e);
+                }
+            }
+        }
+        
+        function SaveConfig(e) {
+            e.preventDefault();
+        }
+    </script>
 </head>
-<body class="bg-slate-800 text-slate-100 h-screen grid grid-cols-1">
-    display settings
+<body class="bg-slate-800 text-slate-100 h-screen p-4">
+    <div class="flex flex-row align-center mb-4">
+        <button class="text-4xl mr-8">󰌍</button>
+        <h1 class="grow text-4xl border-b-2 border-slate-600">Config</h1>
+    </div>
+    <form id="config-form" class="grid grid-cols-4 gap-2">
+        <label for="server-address" class="col-span-2">Server address</label>
+        <input id="server-address" name="server-address" type="text" class="col-span-2 bg-slate-900 p-1 rounded-sm" value="127.0.0.1"/>
+        <label for="server-port" class="col-span-2">Server port</label>
+        <input id="server-port" name="server-port" type="text" class="col-span-2 bg-slate-900 p-1 rounded-sm" value="0"/>
+    </form>
 </body>
 </html>

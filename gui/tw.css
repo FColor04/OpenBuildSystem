@@ -58,3 +58,14 @@ body {
  * your stylesheet by default.
  */
 @tailwind variants;
+
+button:hover {
+    @apply text-slate-300;
+}
+button {
+    @apply text-slate-500;
+}
+
+input.invalid {
+    @apply ring-2 ring-red-500 ring-offset-2 ring-offset-transparent;
+}
