@@ -53,10 +53,8 @@ def get_repo_data(reps):
 
 def clone_repo(repo, path):
     repo_path = "https://github.com/"+repo.full_name
-    try:
-        repo = Repo.init(path)
-    except:
-        repo = Repo.clone_from(repo_path, path)
+    try: repo = Repo.clone_from(repo_path, path)
+    except: repo = Repo.init(path)
     return repo
 
 
@@ -64,4 +62,4 @@ if __name__ == "__main__":
     _, reps = login_github()
     repo_data = get_repo_data(reps)
     rep = clone_repo(repo_data[0][1], "C:/Users/R9_Dev/TestRepo")
-    print(repo_data)
+    print(rep)
