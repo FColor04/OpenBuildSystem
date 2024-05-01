@@ -1,6 +1,8 @@
 import threading
 import watchfiles
 import webview
+import json
+set_data: dict = {}
 
 def watch_and_reload(window, event):
     #debug
@@ -15,8 +17,16 @@ class api:
     def n_click(e):
         print("Node :)")
     def load_config(self):
-        return '{ "example":"config", "username":"Anonymous" }'
+        with open("settings.json", "r+") as f:
+            data = json.loads(f.read())
+        return data
     def save_config(self, config):
+        global set_data
+        print(config)
+        for i in json.loads(config).keys():
+            set_data[i] = json.loads(config)[i]
+        with open("settings.json", "w+") as f:
+            f.writelines(json.dumps(set_data))
         print("Store "+config)
 
 if __name__ == '__main__':
