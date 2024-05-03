@@ -6,5 +6,6 @@
     <orderEntry type="sourceFolder" forTests="false" />
     <orderEntry type="library" name="validate" level="application" />
     <orderEntry type="library" name="validate.js" level="application" />
+    <orderEntry type="library" name="axios" level="application" />
   </component>
 </module>

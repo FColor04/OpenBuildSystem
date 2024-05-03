@@ -3,8 +3,29 @@
     <head>
         <link rel="stylesheet" href="/style.css">
     </head>
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
     <script>
-        
+        function OnPythonLoaded() {
+            console.log("Python loaded");
+            const obsButton = document.getElementById("open-obs");
+            obsButton.addEventListener("click", () => {
+                console.log("Loading obs");
+                window.pywebview.api.load_obs().then(obs => {
+                    console.log(obs);
+                    try {
+                        let buildConfig = JSON.parse(obs);
+                        if (buildConfig.error)
+                            throw buildConfig.error;
+                        
+                        
+                    }catch (e){
+                        console.error(e);
+                        console.log(obs);
+                    }
+                });
+            });
+        }
+        window.addEventListener('pywebviewready', OnPythonLoaded);
     </script>
     <body class="bg-slate-800 text-slate-100 h-screen grid grid-cols-3 auto-rows-max">
         <button class="project-button" id="gh-login">
@@ -15,5 +36,9 @@
             <span class="block text-4xl mb-2"></span>
             Configuration
         </a>
+        <button class="project-button" id="open-obs">
+            <span class="block text-4xl mb-2"></span>
+            <span class="block">Open .OBS</span>
+        </button>
     </body>
 </html>

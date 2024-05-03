@@ -28,6 +28,16 @@ class api:
         with open("settings.json", "w+") as f:
             f.writelines(json.dumps(set_data))
         print("Store "+config)
+    def load_obs(self):
+        obs_path = window.create_file_dialog(
+            webview.OPEN_DIALOG,
+            file_types=('OpenBuildSystem Configuration (*.obs)', 'All files (*.*)')
+        )[0]
+        if obs_path is None:
+            return '{ "error":"Invalid path" }'
+        print(obs_path)
+        with open(obs_path, "r") as f:
+            return f.read()
 
 if __name__ == '__main__':
     # Create a standard webview window

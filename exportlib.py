@@ -30,7 +30,9 @@ def write_settings(set_path="TestProj/Test/", export_type="release",
     settings['headless'] = headless
     settings['proj_path'] = set_path
     p = set_path
-    if p.endswith("/"):
+    if p.endswith("makefile.obs"):
+        pass
+    elif p.endswith("/"):
         p += "makefile.obs"
     else:
         p += "/makefile.obs"
