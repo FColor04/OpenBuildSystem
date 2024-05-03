@@ -19,7 +19,8 @@ def main_ui():
             user, reps = g.login_github(values[0])
             window['text'].update("Github logged in")
             window.close()
-            break
+            github_ui(user, reps)
+            return 0
         elif event == "Start Server":
             print(values["ip"], values["ip"])
             tcp.host = values["ip"]
@@ -27,8 +28,8 @@ def main_ui():
         elif event == 'Start Client':
             print(values["ip"], values["ip"])
             tcp.host = values["ip"]
-            tcp.start_server(values["path"])
-    github_ui(user, reps)
+            tcp.start_client(values["path"])
+            window['text'].update("Got build successfully")
 
 def github_ui(user, reps):
     global window
