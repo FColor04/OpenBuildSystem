@@ -23,13 +23,15 @@ def set_key(key="", dotenv_file=""):
     dotenv.set_key(dotenv_file, "key", os.environ["key"])
 
 dot = load_dotenv()
-def login_github():
+def login_github(keys=''):
+    global dot
     try:
-        os.environ["key"]
+        k = os.environ["key"]
     except:
-        print("no key")
+        k = keys
+        set_key(k, dot)
         return -1
-    auth = Auth.Token(os.environ["key"])
+    auth = Auth.Token(k)
     g = Github(auth=auth)
     print(g.get_user().login)
     repos = []
