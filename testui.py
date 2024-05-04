@@ -1,13 +1,15 @@
 import PySimpleGUI as sg
 import gitlib as g
 import tcplib as tcp
+import udplib as udp
 
 window = None
 def main_ui():
     global window
     sg.theme('DarkAmber')
     layout = [  [sg.Button('Login Github'), sg.InputText()],
-                [sg.Button("Start Server"), sg.Button('Start Client')],
+                [sg.Button("Start Host"), sg.Button('Start Client')],
+                [sg.Button("Start Server")],
                 [sg.InputText("127.0.0.1", key="ip")], [sg.InputText("TestProj/Test", key="path")],
                 [sg.Text("", key="text")] ]
     window = sg.Window('Main', layout, size=(300, 200))
@@ -21,7 +23,7 @@ def main_ui():
             window.close()
             github_ui(user, reps)
             return 0
-        elif event == "Start Server":
+        elif event == "Start Host":
             print(values["ip"], values["ip"])
             tcp.host = values["ip"]
             tcp.start_server(values["path"])
@@ -30,6 +32,10 @@ def main_ui():
             tcp.host = values["ip"]
             tcp.start_client(values["path"])
             window['text'].update("Got build successfully")
+        elif event == "Start Server":
+            udp.localIP = values["ip"]
+            window.close()
+            udp.start_server()
 
 def github_ui(user, reps):
     global window
