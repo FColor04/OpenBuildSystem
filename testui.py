@@ -2,6 +2,14 @@ import PySimpleGUI as sg
 import gitlib as g
 import tcplib as tcp
 import udplib as udp
+from urllib.request import urlopen
+import socket
+def get_ip():
+    s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+    s.connect(('8.8.8.8', 1))
+    local_ip_address = s.getsockname()[0]
+    s.close()
+    return local_ip_address
 
 window = None
 def main_ui():
@@ -27,6 +35,7 @@ def main_ui():
         elif event == "Start Host":
             print(values["ip"], values["ip"])
             tcp.host = values["ip"]
+            window.close()
             tcp.start_server(values["path"])
         elif event == 'Start Client':
             print(values["ip"], values["ip"])
@@ -59,15 +68,21 @@ def get_ui(user, repo, ip='192.168.0.241'):
     sg.theme('DarkAmber')
     layout = [
         [sg.Text("Logged in as: "+user.get_user().login)],
+        [sg.Text("Export path:"), sg.InputText("export.exe", key="exp")],
+        [sg.Text("Platform:"), sg.InputText("Windows", key="plat")],
         [sg.Text(repo.full_name), sg.Text("Available builders:")]]
     udp.localIP = ip
-    for i in udp.start_client('get'):
+    clis = udp.start_client('get')
+    for i in clis:
         layout.append([sg.Button(i)])
     window = sg.Window(repo.full_name, layout)
     while True:
         event, values = window.read()
         if event == sg.WIN_CLOSED:
             break
+        if event in clis:
+            tcp.host = ip
+            tcp.start_client(values['exp'], values['plat'])
 
 if __name__ == "__main__":
     main_ui()
