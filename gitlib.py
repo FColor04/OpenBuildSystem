@@ -22,7 +22,6 @@ def set_key(key="", dotenv_file=""):
     #print(os.environ['key'])
     dotenv.set_key(dotenv_file, "key", os.environ["key"])
 
-dot = load_dotenv()
 def login_github(keys=''):
     global dot
     try:
@@ -59,7 +58,7 @@ def clone_repo(repo, path):
     except: repo = Repo.init(path)
     return repo
 
-
+dot = load_dotenv()
 if __name__ == "__main__":
     _, reps = login_github()
     repo_data = get_repo_data(reps)
