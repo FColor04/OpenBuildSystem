@@ -15,7 +15,7 @@ window = None
 def main_ui():
     global window
     sg.theme('DarkAmber')
-    layout = [  [sg.Button('Login Github'), sg.InputText()],
+    layout = [  [sg.Button('Login Github'), sg.InputText(key='0')],
                 [sg.Button("Start Host"), sg.Button('Start Client')],
                 [sg.Button("Start Server")],
                 [sg.InputText("127.0.0.1", key="ip")], [sg.InputText("TestProj/Test", key="path")],
@@ -27,7 +27,7 @@ def main_ui():
             return 0
         if event == 'Login Github':
             g.dot = g.load_dotenv()
-            user, reps = g.login_github(values[0])
+            user, reps = g.login_github(values['0'])
             window['text'].update("Github logged in")
             window.close()
             github_ui(user, reps)
@@ -72,7 +72,7 @@ def get_ui(user, repo, ip='192.168.0.241'):
         [sg.Text("Platform:"), sg.InputText("Windows", key="plat")],
         [sg.Text(repo.full_name), sg.Text("Available builders:")]]
     udp.localIP = ip
-    clis = udp.start_client('get')
+    clis = udp.get_ips()
     for i in clis:
         layout.append([sg.Button(i)])
     window = sg.Window(repo.full_name, layout)
